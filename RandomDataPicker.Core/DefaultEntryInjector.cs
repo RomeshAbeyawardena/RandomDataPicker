@@ -42,8 +42,6 @@ public sealed class DefaultEntryInjector : IEntryInjector
                 index = random.Next(0, entryList.Count - 1);
             }
 
-            c.Id = index + 1;
-
             entryList.Insert(index, c);
         }
 

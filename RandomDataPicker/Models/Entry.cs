@@ -1,5 +1,6 @@
 ﻿namespace RandomDataPicker.Models;
 
+[MessagePack.MessagePackObject(true)]
 public record Entry
 {
     public int? Id { get; set; }

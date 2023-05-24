@@ -18,10 +18,14 @@ public sealed class EntryPicker
     {
         entries = entryProvider.GetEntries();
         int ct = 0;
+        foreach(var entry in entries)
+        {
+            entry.Id = ct++;
+        }
+
         foreach (var entry in entries.ToArray())
         {
             entries = entryInjector.InjectEntry(entries, entry, random.Next(150, 150 * 3));
-            entry.Id = ct++;
         }
     }
 
