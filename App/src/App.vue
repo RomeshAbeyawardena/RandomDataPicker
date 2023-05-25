@@ -1,30 +1,25 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import { createEntryStore } from "./stores/entry";
+import { storeToRefs } from "pinia";
+import EntryCard from "./components/EntryCard.vue";
+import { onMounted } from "vue";
+const store = createEntryStore();
+const { winningEntries, status } = storeToRefs(store);
+
+onMounted(async() => {
+  await store.initialise();
+})
+
+async function pickWinners() :Promise<void>{
+  await store.getWinners(5);
+}
+
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  
+  <div v-if="status?.isLoaded" v-for="entry in winningEntries">
+    <EntryCard :entry-card="entry" />
+  </div><br />
+  <button v-if="status?.isLoaded" @click="pickWinners">Pick winners</button>
 </template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>

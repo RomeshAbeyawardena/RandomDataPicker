@@ -1,4 +1,5 @@
 using MessagePack;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using RandomDataPicker.Contracts;
 using RandomDataPicker.Core;
@@ -6,6 +7,7 @@ using RandomDataPicker.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.RegisterServices("entries.json")
+    .AddCors()
     .AddDistributedMemoryCache();
 var app = builder.Build();
 
@@ -65,18 +67,25 @@ async Task<IEnumerable<Entry>> GetEntries(IServiceProvider services)
     return entries;
 }
 
+async Task<EntryStatus> GetStatus(IServiceProvider services)
+{
+    IEnumerable<Entry>? entries = await GetCachedValue<List<Entry>>(services, ENTRY_KEY);
+    return new EntryStatus
+    {
+        IsLoaded = entries != null,
+        IsPopulated = await GetCachedValue<bool>(services, IS_POPULATED_KEY),
+        TotalNumberOfEntries = entries?.Count()
+    };
+}
+
 app.MapGet($"{URL_PREFIX}", async(s) => {
-    await s.Response.WriteAsJsonAsync(GetEntries(s.RequestServices));
+    await GetEntries(s.RequestServices);
+    await s.Response.WriteAsJsonAsync(await GetStatus(s.RequestServices));
 });
 
 app.MapGet($"{URL_PREFIX}/status", async (s) =>
 {
-    IEnumerable<Entry>? entries = await GetCachedValue<List<Entry>>(s.RequestServices, ENTRY_KEY);
-    await s.Response.WriteAsJsonAsync(new EntryStatus { 
-        IsLoaded = entries != null,
-        IsPopulated = await GetCachedValue<bool>(s.RequestServices, IS_POPULATED_KEY),
-        TotalNumberOfEntries = entries?.Count()
-    });
+    await s.Response.WriteAsJsonAsync(GetStatus(s.RequestServices));
 });
 
 app.MapGet($"{URL_PREFIX}/populate", async (s) =>
@@ -85,6 +94,7 @@ app.MapGet($"{URL_PREFIX}/populate", async (s) =>
 
     if(isPopulated)
     {
+        await s.Response.WriteAsJsonAsync(await GetStatus(s.RequestServices));
         return;
     }
 
@@ -111,7 +121,7 @@ app.MapGet($"{URL_PREFIX}/populate", async (s) =>
 
     await SetCachedValue(s.RequestServices, IS_POPULATED_KEY, true);
 
-    await s.Response.WriteAsJsonAsync(entries);
+    await s.Response.WriteAsJsonAsync(await GetStatus(s.RequestServices));
 });
 
 app.MapGet($"{URL_PREFIX}/pick", async(s) =>
@@ -127,5 +137,7 @@ app.MapGet($"{URL_PREFIX}/pick", async(s) =>
     var entries = entryPicker.PickEntries(await GetEntries(s.RequestServices), numberOfEntries);
     await s.Response.WriteAsJsonAsync(entries);
 });
+
+app.UseCors(policy => policy.AllowAnyOrigin());
 
 app.Run();
