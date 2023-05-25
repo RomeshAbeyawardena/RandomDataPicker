@@ -63,9 +63,8 @@ export const createEntryStore = defineStore("entry-store", () : IEntryStore => {
 
     async function getStatus():Promise<IStatus> {
         const response = await axios.get("status");
-        var rawStatus = JSON.parse(response.data);
         
-        return status.value = rawStatus.result;
+        return status.value = JSON.parse(response.data);
     }
 
     async function injectEntry(entry:IEntry, numberOfEntries:number):Promise<void> {
@@ -88,7 +87,9 @@ export const createEntryStore = defineStore("entry-store", () : IEntryStore => {
             formData.append("name", entry.name);
         }
 
-        await axios.postForm("inject", formData);
+        const response = await axios.postForm("inject", formData);
+
+        status.value = JSON.parse(response.data);
     }
 
     return {

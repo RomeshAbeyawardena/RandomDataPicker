@@ -3,22 +3,25 @@ import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
 import Button from "primevue/button";
 import { Entry } from "../models/entry";
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { createEntryStore } from '../stores/entry';
 
 const numberOfEntries = ref(150);
 const entry = ref(new Entry());
 
-const isValid = computed(() => {
-    return entry.value != undefined
+function isValid() {
+    const result = entry.value != undefined
         && entry.value.city != undefined
         && entry.value.city.length > 5
         && entry.value.email != undefined
         && entry.value.email?.length > 5
         && entry.value.name != undefined
-        && entry.value.name?.length > 5
+        && entry.value.name?.length > 4
         && numberOfEntries.value > 0;
-});
+
+    console.log(result);
+    return result;
+};
 
 
 const store = createEntryStore();
@@ -54,7 +57,7 @@ async function injectEntries() {
             </span>
         </div>
         <div>
-            <Button @click="injectEntries" :disabled="!isValid">Inject entry</Button>
+            <Button @click="injectEntries" :disabled="!isValid()">Inject entry</Button>
         </div>
     </div>
 </template>

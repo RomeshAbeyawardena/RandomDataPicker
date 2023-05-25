@@ -85,7 +85,7 @@ app.MapGet($"{URL_PREFIX}", async(s) => {
 
 app.MapGet($"{URL_PREFIX}/status", async (s) =>
 {
-    await s.Response.WriteAsJsonAsync(GetStatus(s.RequestServices));
+    await s.Response.WriteAsJsonAsync(await GetStatus(s.RequestServices));
 });
 
 app.MapGet($"{URL_PREFIX}/populate", async (s) =>
@@ -165,6 +165,8 @@ app.MapPost($"{URL_PREFIX}/inject", async (s) =>
     }
 
     await SetEntries(s.RequestServices, entries);
+
+    await s.Response.WriteAsJsonAsync(await GetStatus(s.RequestServices));
 });
 
 app.UseCors(policy => policy.AllowAnyOrigin());
