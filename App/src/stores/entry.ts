@@ -25,7 +25,7 @@ export const createEntryStore = defineStore("entry-store", () : IEntryStore => {
     const hasWinners = ref(false);
     async function populate():Promise<void> {
         const response = await axios.get("populate");
-        status.value = response.data;
+        status.value = JSON.parse(response.data);
     }
 
     async function initialise():Promise<void> {
@@ -37,7 +37,7 @@ export const createEntryStore = defineStore("entry-store", () : IEntryStore => {
 
         if(!status.value?.isLoaded) {
             const response = await axios.get("/");
-            status.value = response.data;
+            status.value = JSON.parse(response.data);
         }
 
         if(!status.value?.isPopulated) {

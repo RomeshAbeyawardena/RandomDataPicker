@@ -24,6 +24,7 @@ export class Entry implements IEntry {
         newEntry.email = entry.email;
         newEntry.id = entry.id;
         newEntry.isFlagged = entry.isFlagged;
+        newEntry.name = entry.name;
         return newEntry;
     }
 }
