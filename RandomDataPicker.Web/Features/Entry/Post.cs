@@ -13,6 +13,7 @@ public class Post : BaseHandler
         var name = s.Request.Form["name"];
         var email = s.Request.Form["email"];
         var city = s.Request.Form["city"];
+        var isFlagged = s.Request.Form["isFlagged"];
         var numberOfEntriesValue = s.Request.Form["numberOfEntries"];
 
         var entries = await GetEntries(s.RequestServices);
@@ -22,6 +23,7 @@ public class Post : BaseHandler
         {
             entries = HandlerDependencies.EntryInjector.InjectEntry(entries, new Models.Entry
             {
+                IsFlagged = isFlagged == "true",
                 Name = name,
                 Email = email,
                 City = city,

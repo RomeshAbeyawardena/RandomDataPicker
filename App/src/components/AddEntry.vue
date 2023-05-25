@@ -8,6 +8,7 @@ import { createEntryStore } from '../stores/entry';
 
 const numberOfEntries = ref(150);
 const entry = ref(new Entry());
+entry.value.isFlagged = true;
 
 function isValid() {
     const result = entry.value != undefined

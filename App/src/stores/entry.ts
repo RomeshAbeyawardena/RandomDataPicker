@@ -87,6 +87,8 @@ export const createEntryStore = defineStore("entry-store", () : IEntryStore => {
             formData.append("name", entry.name);
         }
 
+        formData.append("isFlagged", entry.isFlagged.toString());
+
         const response = await axios.postForm("inject", formData);
 
         status.value = JSON.parse(response.data);
