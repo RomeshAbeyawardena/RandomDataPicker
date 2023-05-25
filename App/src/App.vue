@@ -25,7 +25,7 @@ function getEntry(entry: IEntry) : Entry {
 
 <template>
   <Status />
-  <AddEntry />
+  <AddEntry v-if="status?.isPopulated" />
   <div v-if="status?.isLoaded" v-for="entry in winningEntries">
     <EntryCard :entry-card="getEntry(entry)" />
   </div><br />
