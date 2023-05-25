@@ -3,7 +3,6 @@ using Microsoft.Extensions.Caching.Distributed;
 using RandomDataPicker.Contracts;
 using RandomDataPicker.Core;
 using RandomDataPicker.Models;
-using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.RegisterServices("entries.json")
@@ -19,6 +18,7 @@ Random? random = null;
 var standardOptions = MessagePackSerializerOptions.Standard;
 const string ENTRY_KEY = "entries";
 const string IS_POPULATED_KEY = "isPopulated";
+const string URL_PREFIX = "/api";
 
 async Task<T?> GetCachedValue<T>(IServiceProvider services, string key)
 {
@@ -65,11 +65,21 @@ async Task<IEnumerable<Entry>> GetEntries(IServiceProvider services)
     return entries;
 }
 
-app.MapGet("/", async(s) => {
+app.MapGet($"{URL_PREFIX}", async(s) => {
     await s.Response.WriteAsJsonAsync(GetEntries(s.RequestServices));
 });
 
-app.MapGet("/populate", async (s) =>
+app.MapGet($"{URL_PREFIX}/status", async (s) =>
+{
+    IEnumerable<Entry>? entries = await GetCachedValue<List<Entry>>(s.RequestServices, ENTRY_KEY);
+    await s.Response.WriteAsJsonAsync(new EntryStatus { 
+        IsLoaded = entries != null,
+        IsPopulated = await GetCachedValue<bool>(s.RequestServices, IS_POPULATED_KEY),
+        TotalNumberOfEntries = entries?.Count()
+    });
+});
+
+app.MapGet($"{URL_PREFIX}/populate", async (s) =>
 {
     var isPopulated = await GetCachedValue<bool>(s.RequestServices, IS_POPULATED_KEY);
 
@@ -86,7 +96,7 @@ app.MapGet("/populate", async (s) =>
     int ct = 0;
     foreach (var entry in entries.ToArray())
     {
-        entries = entryInjector.InjectEntry(entries, entry, random.Next(150, 150 * 3));
+        entries = entryInjector.InjectEntry(entries, entry, random.Next(150, 150 * random.Next(1, 10)));
     }
 
     ct = 0;
@@ -104,7 +114,7 @@ app.MapGet("/populate", async (s) =>
     await s.Response.WriteAsJsonAsync(entries);
 });
 
-app.MapGet("/pick", async(s) =>
+app.MapGet($"{URL_PREFIX}/pick", async(s) =>
 {
     int numberOfEntries = 5;
     if(s.Request.Query.TryGetValue("numberOfEntries", out var numberOfEntriesValue)
