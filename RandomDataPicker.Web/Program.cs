@@ -6,7 +6,9 @@ using RandomDataPicker.Web.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.RegisterServices("entries.json")
-    .AddDataServices(s => s.GetRequiredService<IConfiguration>().GetConnectionString("default") ?? throw new NullReferenceException(),
+    .AddAutoMapper(typeof(EntryFeature.Get).Assembly)
+    .AddDataServices(s => s.GetRequiredService<IConfiguration>()
+    .GetConnectionString("default") ?? throw new NullReferenceException(),
         c => c.UseQuerySplittingBehavior(Microsoft.EntityFrameworkCore.QuerySplittingBehavior.SingleQuery))
     .AddCors()
     .AddDistributedMemoryCache();

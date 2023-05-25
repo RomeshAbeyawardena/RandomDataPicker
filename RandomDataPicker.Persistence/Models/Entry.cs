@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace RandomDataPicker.Persistence.Models;
 
 [Table(TABLE_NAME)]
-public record Entry : IIdentity
+public record Entry : IIdentity, ICreated
 {
     public const string TABLE_NAME = "Entry";
     [Key]

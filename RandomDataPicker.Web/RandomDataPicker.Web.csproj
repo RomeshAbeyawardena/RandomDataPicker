@@ -11,5 +11,7 @@
     <ProjectReference Include="..\RandomDataPicker.Core\RandomDataPicker.Core.csproj" />
     <ProjectReference Include="..\RandomDataPicker.Persistence.SqlServer\RandomDataPicker.Persistence.SqlServer.csproj" />
   </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+  </ItemGroup>
 </Project>

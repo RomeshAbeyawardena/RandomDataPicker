@@ -1,10 +1,14 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using AutoMapper;
+using Microsoft.Extensions.Caching.Distributed;
 using RandomDataPicker.Contracts;
 
 namespace RandomDataPicker.Web.Features;
 
 public class HandlerDependencies
 {
+    public IMapper? Mapper { get; set; }
+    public IRepositoryFactory? RepositoryFactory { get; set; }
+    public IRepository<Persistence.Models.Entry>? EntryRepository { get; set; }
     public IDistributedCache? Cache { get; set; }
     public IEntryProvider? EntryProvider { get; set; }
     public IEntryInjector? EntryInjector { get; set; }
