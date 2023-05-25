@@ -1,9 +1,11 @@
 <script setup lang="ts">
     import { Entry } from "../models/entry";
+
     const props = defineProps({
         entryCard:Entry,
         showEmail:Boolean
-    })
+    });
+
 </script>
 <template>
     <div>

@@ -138,6 +138,35 @@ app.MapGet($"{URL_PREFIX}/pick", async(s) =>
     await s.Response.WriteAsJsonAsync(entries);
 });
 
+app.MapPost($"{URL_PREFIX}/inject", async (s) =>
+{
+    var name = s.Request.Form["name"];
+    var email = s.Request.Form["email"];
+    var city = s.Request.Form["city"];
+    var numberOfEntriesValue = s.Request.Form["numberOfEntries"];
+
+    var entries = await GetEntries(s.RequestServices);
+    entryInjector ??= s.RequestServices.GetRequiredService<IEntryInjector>();
+    
+    if(int.TryParse(numberOfEntriesValue, out var numberofEntries))
+    {
+        entries = entryInjector.InjectEntry(entries, new Entry
+        {
+            Name = name,
+            Email = email,
+            City = city,
+        }, numberofEntries, true);
+    }
+
+    var ct = 0;
+    foreach (var entry in entries)
+    {
+        entry.Id = ++ct;
+    }
+
+    await SetEntries(s.RequestServices, entries);
+});
+
 app.UseCors(policy => policy.AllowAnyOrigin());
 
 app.Run();

@@ -6,6 +6,7 @@ import { Axios } from "axios";
 
 export interface IEntryStore {
     initialise():Promise<void>;
+    injectEntry(entry:IEntry, numberOfEntries:number):Promise<void>;
     populate():Promise<void>;
     getStatus():Promise<IStatus>;
     getWinners(numberOfEntries:number): Promise<IEntry[]> 
@@ -67,8 +68,32 @@ export const createEntryStore = defineStore("entry-store", () : IEntryStore => {
         return status.value = rawStatus.result;
     }
 
+    async function injectEntry(entry:IEntry, numberOfEntries:number):Promise<void> {
+        const formData = new FormData();
+
+        formData.append("numberOfEntries", numberOfEntries.toString());
+
+        if(entry.city != undefined)
+        {
+            formData.append("city", entry.city);
+        }
+
+        if(entry.email != undefined)
+        {
+            formData.append("email", entry.email);
+        }
+
+        if(entry.name != undefined)
+        {
+            formData.append("name", entry.name);
+        }
+
+        await axios.postForm("inject", formData);
+    }
+
     return {
         initialise,
+        injectEntry,
         getStatus,
         getWinners,
         hasWinners,
