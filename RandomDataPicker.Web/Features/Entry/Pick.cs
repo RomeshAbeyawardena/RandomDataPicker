@@ -21,22 +21,18 @@ public class Pick : BaseHandler
         HandlerDependencies.EntryPicker ??= s.RequestServices.GetRequiredService<IEntryPicker>();
         var entries = HandlerDependencies.EntryPicker.PickEntries(await GetEntries(s.RequestServices), numberOfEntries);
 
-        if(HandlerDependencies.EntryRepository == null)
+        HandlerDependencies.Mapper ??= s.RequestServices.GetRequiredService<IMapper>();
+
+        var entryRepository = s.RequestServices.GetRequiredService<IRepositoryFactory>()
+            .GetRepository<Persistence.Models.Entry>();
+
+        var index = 0;
+        foreach (var entry in entries)
         {
-            HandlerDependencies.RepositoryFactory ??= s.RequestServices.GetRequiredService<IRepositoryFactory>();
-
-            HandlerDependencies.EntryRepository = HandlerDependencies.RepositoryFactory
-                .GetRepository<Persistence.Models.Entry>();
-
-            HandlerDependencies.Mapper ??= s.RequestServices.GetRequiredService<IMapper>();
-
-            var index = 0;
-            foreach(var entry in entries)
-            {
-                await HandlerDependencies.EntryRepository
-                    .Save(HandlerDependencies
-                            .Mapper.Map<Persistence.Models.Entry>(entry), index++ == entries.Count());
-            }
+            await entryRepository
+                .Save(HandlerDependencies
+                        .Mapper.Map<Persistence.Models.Entry>(entry), 
+                        index++ == entries.Count() - 1);
         }
 
         await s.Response.WriteAsJsonAsync(entries);

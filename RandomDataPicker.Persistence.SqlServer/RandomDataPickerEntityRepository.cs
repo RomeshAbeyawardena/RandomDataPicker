@@ -1,9 +1,12 @@
-﻿namespace RandomDataPicker.Persistence.SqlServer;
+﻿using Microsoft.Extensions.Internal;
+
+namespace RandomDataPicker.Persistence.SqlServer;
 
 public class RandomDataPickerEntityRepository<T> : EntityRepository<RandomDataPickerContext, T>
     where T : class
 {
-    public RandomDataPickerEntityRepository(RandomDataPickerContext dbContext) : base(dbContext)
+    public RandomDataPickerEntityRepository(RandomDataPickerContext dbContext, 
+        ISystemClock systemClock) : base(dbContext, systemClock)
     {
     }
 }
