@@ -18,6 +18,11 @@ public abstract class EntityRepository<TDbContext, T> : IRepository<T>
         dbSet = dbContext.Set<T>();
     }
 
+    public Task<int> CountAsync(Expression<Func<T, bool>> getExpression, CancellationToken cancellationToken = default)
+    {
+        return dbSet.Where(getExpression).CountAsync(cancellationToken);
+    }
+
     public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> findExpression, 
         Func<IQueryable<T>, IQueryable<T>>? configure = null, 
         CancellationToken cancellationToken = default)

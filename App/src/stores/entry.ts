@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { IEntry } from "../models/entry";
+import { IPersistedEntry } from "../models/persistedEntry";
 import { IStatus } from "../models/status";
 import { ref, Ref } from "vue";
 import { Axios } from "axios";
@@ -9,17 +10,21 @@ export interface IEntryStore {
     injectEntry(entry:IEntry, numberOfEntries:number):Promise<void>;
     populate():Promise<void>;
     getStatus():Promise<IStatus>;
-    getWinners(numberOfEntries:number): Promise<IEntry[]> 
+    getWinners(numberOfEntries:number): Promise<IEntry[]>;
+    getWinnerHistory(numberOfEntries:number): Promise<IPersistedEntry[]>;
     hasWinners:Ref<boolean>;
+    searchText:Ref<string>;
     status: Ref<IStatus|undefined>;
     winningEntries: Ref<IEntry[]>;
+    winnerHistory: Ref<IPersistedEntry[]>;
 }
 
 export const createEntryStore = defineStore("entry-store", () : IEntryStore => {
     const axios = new Axios({
         baseURL : "http://192.168.4.36:5011/api"
     });
-
+    const searchText = ref("");
+    const winnerHistory = ref(new Array<IPersistedEntry>());
     const status = ref<IStatus>();
     const winningEntries = ref(new Array<IEntry>());
     const hasWinners = ref(false);
@@ -58,6 +63,8 @@ export const createEntryStore = defineStore("entry-store", () : IEntryStore => {
         for(let winner of winners){
             winningEntries.value.push(winner);
         }
+
+        await getStatus();
         return winners;
     }
 
@@ -94,14 +101,29 @@ export const createEntryStore = defineStore("entry-store", () : IEntryStore => {
         status.value = JSON.parse(response.data);
     }
 
+    async function getWinnerHistory(numberOfEntries:number)
+        : Promise<IPersistedEntry[]>
+    {
+        var response = await axios.get("winners", {
+            params: {
+                totalItems: numberOfEntries,
+                q: ""
+            }
+        });
+        return JSON.parse(response.data);
+    }
+
     return {
         initialise,
         injectEntry,
         getStatus,
         getWinners,
+        getWinnerHistory,
         hasWinners,
         populate,
         status,
-        winningEntries
-    }
+        searchText,
+        winningEntries,
+        winnerHistory
+    };
 })

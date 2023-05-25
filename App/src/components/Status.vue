@@ -24,6 +24,7 @@
     <Toolbar class="mb-2">
         <template #start>
             <Button class="mr-2" badge-class="p-badge-success" :badge="status?.totalNumberOfEntries?.toString()" type="button" label="Entries" />
+            <Button class="mr-2" badge-class="p-badge-success" :badge="status?.totalPersistedEntries?.toString()" type="button" label="Persisted Entries" />
             <Button :severity="getSeverity(status?.isLoaded)" class="mr-2" iconPos="right" :icon="getIcon(status?.isLoaded)"  type="button" label="Loaded" />
             <Button :severity="getSeverity(status?.isPopulated)" iconPos="right" :icon="getIcon(status?.isPopulated)" type="button" label="Populated" />
         </template>

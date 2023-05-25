@@ -1,4 +1,5 @@
 ﻿using MessagePack;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Extensions.Caching.Distributed;
 using RandomDataPicker.Contracts;
 using RandomDataPicker.Models;
@@ -67,11 +68,16 @@ public abstract class BaseHandler
     protected async Task<EntryStatus> GetStatus(IServiceProvider services)
     {
         IEnumerable<Models.Entry>? entries = await GetCachedValue<List<Models.Entry>>(services, ENTRY_KEY);
+
+        var entryRepository = services.GetRequiredService<IRepositoryFactory>()
+           .GetRepository<Persistence.Models.Entry>();
+
         return new EntryStatus
         {
             IsLoaded = entries != null,
             IsPopulated = await GetCachedValue<bool>(services, IS_POPULATED_KEY),
-            TotalNumberOfEntries = entries?.Count()
+            TotalNumberOfEntries = entries?.Count(),
+            TotalPersistedEntries = await entryRepository.CountAsync(a => true)
         };
     }
 
