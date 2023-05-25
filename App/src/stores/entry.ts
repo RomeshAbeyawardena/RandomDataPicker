@@ -51,7 +51,6 @@ export const createEntryStore = defineStore("entry-store", () : IEntryStore => {
             }
         })).data;
 
-        console.log(winnersRaw);
         const winners = JSON.parse(winnersRaw);
         winningEntries.value.length = 0;
 
@@ -62,7 +61,10 @@ export const createEntryStore = defineStore("entry-store", () : IEntryStore => {
     }
 
     async function getStatus():Promise<IStatus> {
-        return status.value = (await axios.get("status")).data;
+        const response = await axios.get("status");
+        var rawStatus = JSON.parse(response.data);
+        
+        return status.value = rawStatus.result;
     }
 
     return {

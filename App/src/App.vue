@@ -2,6 +2,7 @@
 import { createEntryStore } from "./stores/entry";
 import { storeToRefs } from "pinia";
 import EntryCard from "./components/EntryCard.vue";
+import AddEntry from "./components/AddEntry.vue";
 import { onMounted } from "vue";
 const store = createEntryStore();
 const { winningEntries, status } = storeToRefs(store);
@@ -17,7 +18,7 @@ async function pickWinners() :Promise<void>{
 </script>
 
 <template>
-  
+  <AddEntry />
   <div v-if="status?.isLoaded" v-for="entry in winningEntries">
     <EntryCard :entry-card="entry" />
   </div><br />
