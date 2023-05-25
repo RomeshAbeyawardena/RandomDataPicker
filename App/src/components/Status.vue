@@ -17,8 +17,8 @@
     <Toolbar class="mb-2">
         <template #start>
             <Button class="mr-2" badge-class="p-badge-success" :badge="status?.totalNumberOfEntries?.toString()" type="button" label="Entries" />
-            <Button class="mr-2" badge-class="p-badge-success" :icon="getIcon(status?.isLoaded)"  type="button" label="Loaded" />
-            <Button badge-class="p-badge-success" :icon="getIcon(status?.isPopulated)" type="button" label="Populated" />
+            <Button class="mr-2" iconPos="right" :icon="getIcon(status?.isLoaded)"  type="button" label="Loaded" />
+            <Button iconPos="right" :icon="getIcon(status?.isPopulated)" type="button" label="Populated" />
         </template>
         <template #end>
             <h3>Random entry draw generator</h3>
