@@ -18,21 +18,39 @@ IEntryPicker? entryPicker = null;
 Random? random = null;
 var standardOptions = MessagePackSerializerOptions.Standard;
 const string ENTRY_KEY = "entries";
+const string IS_POPULATED_KEY = "isPopulated";
 
-async Task<IEnumerable<Entry>> GetEntries(IServiceProvider services)
+async Task<T?> GetCachedValue<T>(IServiceProvider services, string key)
 {
     cache ??= services.GetRequiredService<IDistributedCache>();
 
-    var entryBytes = await cache.GetAsync(ENTRY_KEY);
+    var cachedBytes = await cache.GetAsync(key);
 
-    IEnumerable<Entry> entries;
-    
-    if (entryBytes != null)
+    if (cachedBytes != null)
     {
-        entries = MessagePackSerializer.Deserialize<List<Entry>>(entryBytes,
+        return MessagePackSerializer.Deserialize<T>(cachedBytes,
             standardOptions, out _);
     }
-    else
+
+    return default;
+}
+
+async Task SetCachedValue<T>(IServiceProvider services, string key, T value)
+{
+    cache ??= services.GetRequiredService<IDistributedCache>();
+    await cache.SetAsync(key, MessagePackSerializer.Serialize(value, standardOptions, CancellationToken.None));
+}
+
+async Task SetEntries(IServiceProvider services, IEnumerable<Entry> entries)
+{
+    await SetCachedValue(services, ENTRY_KEY, entries);
+}
+
+async Task<IEnumerable<Entry>> GetEntries(IServiceProvider services)
+{
+    IEnumerable<Entry>? entries = await GetCachedValue<List<Entry>>(services, ENTRY_KEY);
+    
+    if (entries == null)
     {
         entryProvider ??= services.GetRequiredService<IEntryProvider>();
         entries = entryProvider.GetEntries();
@@ -41,7 +59,7 @@ async Task<IEnumerable<Entry>> GetEntries(IServiceProvider services)
         {
             entry.Id = ++ct;
         }
-        cache.Set(ENTRY_KEY, MessagePackSerializer.Serialize(entries, standardOptions, CancellationToken.None));
+        await SetEntries(services, entries);
     }
 
     return entries;
@@ -53,6 +71,13 @@ app.MapGet("/", async(s) => {
 
 app.MapGet("/populate", async (s) =>
 {
+    var isPopulated = await GetCachedValue<bool>(s.RequestServices, IS_POPULATED_KEY);
+
+    if(isPopulated)
+    {
+        return;
+    }
+
     entryInjector ??= s.RequestServices.GetRequiredService<IEntryInjector>();
     random ??= s.RequestServices.GetRequiredService<Random>();
 
@@ -72,15 +97,25 @@ app.MapGet("/populate", async (s) =>
 
     cache ??= s.RequestServices.GetRequiredService<IDistributedCache>();
 
-    cache.Set(ENTRY_KEY, MessagePackSerializer.Serialize(entries, standardOptions, CancellationToken.None));
+    await SetEntries(s.RequestServices, entries);
+
+    await SetCachedValue(s.RequestServices, IS_POPULATED_KEY, true);
 
     await s.Response.WriteAsJsonAsync(entries);
 });
 
 app.MapGet("/pick", async(s) =>
 {
+    int numberOfEntries = 5;
+    if(s.Request.Query.TryGetValue("numberOfEntries", out var numberOfEntriesValue)
+        && int.TryParse(numberOfEntriesValue, out numberOfEntries))
+    {
+
+    }
+
     entryPicker ??= s.RequestServices.GetRequiredService<IEntryPicker>();
-    entryPicker.PickEntries(await GetEntries(s.RequestServices), 5);
+    var entries = entryPicker.PickEntries(await GetEntries(s.RequestServices), numberOfEntries);
+    await s.Response.WriteAsJsonAsync(entries);
 });
 
 app.Run();
