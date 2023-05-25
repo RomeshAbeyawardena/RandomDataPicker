@@ -1,12 +1,14 @@
 using MessagePack;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
+using RandomDataPicker.Persistence.SqlServer;
 using RandomDataPicker.Contracts;
 using RandomDataPicker.Core;
 using RandomDataPicker.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.RegisterServices("entries.json")
+    .AddDataServices(s => s.GetRequiredService<IConfiguration>().GetConnectionString("default") ?? throw new NullReferenceException(),
+        c => c.UseQuerySplittingBehavior(Microsoft.EntityFrameworkCore.QuerySplittingBehavior.SingleQuery))
     .AddCors()
     .AddDistributedMemoryCache();
 var app = builder.Build();

@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomDataPicker.Core", "Ra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomDataPicker.Web", "RandomDataPicker.Web\RandomDataPicker.Web.csproj", "{D420FCB4-6CD4-4CFF-B446-33B8038BD5CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomDataPicker.Persistence", "RandomDataPicker.Persistence\RandomDataPicker.Persistence.csproj", "{E8408BE9-1DF7-46AF-92D0-0B633A81221C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomDataPicker.Persistence.SqlServer", "RandomDataPicker.Persistence.SqlServer\RandomDataPicker.Persistence.SqlServer.csproj", "{8409D83E-E9BF-4BCC-94EB-A7FE7ADB6056}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +40,13 @@ Global
 		{D420FCB4-6CD4-4CFF-B446-33B8038BD5CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D420FCB4-6CD4-4CFF-B446-33B8038BD5CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D420FCB4-6CD4-4CFF-B446-33B8038BD5CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8408BE9-1DF7-46AF-92D0-0B633A81221C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8408BE9-1DF7-46AF-92D0-0B633A81221C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8408BE9-1DF7-46AF-92D0-0B633A81221C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8408BE9-1DF7-46AF-92D0-0B633A81221C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8409D83E-E9BF-4BCC-94EB-A7FE7ADB6056}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8409D83E-E9BF-4BCC-94EB-A7FE7ADB6056}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8409D83E-E9BF-4BCC-94EB-A7FE7ADB6056}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8409D83E-E9BF-4BCC-94EB-A7FE7ADB6056}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RandomDataPicker.Core\RandomDataPicker.Core.csproj" />
+    <ProjectReference Include="..\RandomDataPicker.Persistence.SqlServer\RandomDataPicker.Persistence.SqlServer.csproj" />
   </ItemGroup>
 
 </Project>
