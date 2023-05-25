@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace RandomDataPicker.Persistence.Models;
 
 [Table(TABLE_NAME)]
+[MessagePack.MessagePackObject(true)]
 public record Entry : IIdentity, ICreated
 {
     public const string TABLE_NAME = "Entry";

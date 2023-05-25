@@ -24,6 +24,8 @@ app.MapGet($"{URL_PREFIX}/populate", new EntryFeature.Populate(handlerDependenci
 
 app.MapGet($"{URL_PREFIX}/pick", new EntryFeature.Pick(handlerDependencies).Execute);
 
+app.MapGet($"{URL_PREFIX}/winners", new EntryFeature.Winners.Get(handlerDependencies).Execute);
+
 app.MapPost($"{URL_PREFIX}/inject", new EntryFeature.Post(handlerDependencies).Execute);
 
 app.UseCors(policy => policy.AllowAnyOrigin());

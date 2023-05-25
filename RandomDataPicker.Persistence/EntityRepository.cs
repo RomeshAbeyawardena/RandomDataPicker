@@ -18,9 +18,16 @@ public abstract class EntityRepository<TDbContext, T> : IRepository<T>
         dbSet = dbContext.Set<T>();
     }
 
-    public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> findExpression, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> findExpression, 
+        Func<IQueryable<T>, IQueryable<T>>? configure = null, 
+        CancellationToken cancellationToken = default)
     {
-        return await dbSet.Where(findExpression).ToArrayAsync(cancellationToken);
+        var query = configure == null
+            ? dbSet.Where(findExpression)
+            : configure(dbSet.Where(findExpression));
+
+        return await query
+            .ToArrayAsync(cancellationToken);
     }
 
     public async Task<T> Save(T entity, bool commitChanges = true, CancellationToken cancellationToken = default)
