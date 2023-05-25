@@ -17,4 +17,13 @@ export class Entry implements IEntry {
         this.id = 0;
         this.isFlagged = false;
     }
+
+    static convert(entry:IEntry): Entry {
+        const newEntry = new Entry();
+        newEntry.city = entry.city;
+        newEntry.email = entry.email;
+        newEntry.id = entry.id;
+        newEntry.isFlagged = entry.isFlagged;
+        return newEntry;
+    }
 }

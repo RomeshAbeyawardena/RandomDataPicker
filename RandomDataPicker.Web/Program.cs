@@ -156,6 +156,11 @@ app.MapPost($"{URL_PREFIX}/inject", async (s) =>
             Email = email,
             City = city,
         }, numberofEntries, true);
+        s.Response.StatusCode = 201;
+    }
+    else
+    {
+        s.Response.StatusCode = 400;
     }
 
     var ct = 0;

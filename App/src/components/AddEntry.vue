@@ -19,7 +19,6 @@ function isValid() {
         && entry.value.name?.length > 4
         && numberOfEntries.value > 0;
 
-    console.log(result);
     return result;
 };
 
@@ -27,6 +26,7 @@ function isValid() {
 const store = createEntryStore();
 async function injectEntries() {
     await store.injectEntry(entry.value, numberOfEntries.value);
+    entry.value = new Entry();
 }
 
 </script>
@@ -62,9 +62,8 @@ async function injectEntries() {
     </div>
 </template>
 <style>
-span.p-input-icon-left>svg:first-of-type,
-.p-input-icon-left>i:first-of-type {
-    left: 1.75rem;
+span.p-input-icon-left>i {
+    left: 1.75rem !important;
     position: relative;
 }
 
