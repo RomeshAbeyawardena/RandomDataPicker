@@ -5,7 +5,7 @@ import PrimeVue from 'primevue/config';
 import "primevue/resources/themes/bootstrap4-dark-blue/theme.css";
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
-
+import './scss/index.scss';
 import BadgeDirective from 'primevue/badgedirective';
 
 createApp(App)

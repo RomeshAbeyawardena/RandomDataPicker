@@ -12,13 +12,20 @@
         }
         else return "pi pi-times";
     }
+
+    function getClass(bool:boolean | undefined) {
+        if(bool != undefined && bool){
+            return "success";
+        }
+        else return "secondary";
+    }
 </script>
 <template>
     <Toolbar class="mb-2">
         <template #start>
             <Button class="mr-2" badge-class="p-badge-success" :badge="status?.totalNumberOfEntries?.toString()" type="button" label="Entries" />
-            <Button class="mr-2" iconPos="right" :icon="getIcon(status?.isLoaded)"  type="button" label="Loaded" />
-            <Button iconPos="right" :icon="getIcon(status?.isPopulated)" type="button" label="Populated" />
+            <Button :severity="getClass(status?.isLoaded)" class="mr-2" iconPos="right" :icon="getIcon(status?.isLoaded)"  type="button" label="Loaded" />
+            <Button :severity="getClass(status?.isPopulated)" iconPos="right" :icon="getIcon(status?.isPopulated)" type="button" label="Populated" />
         </template>
         <template #end>
             <h3>Random entry draw generator</h3>

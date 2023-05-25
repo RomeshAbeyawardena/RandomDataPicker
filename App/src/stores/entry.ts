@@ -17,7 +17,7 @@ export interface IEntryStore {
 
 export const createEntryStore = defineStore("entry-store", () : IEntryStore => {
     const axios = new Axios({
-        baseURL : "http://localhost:5011/api"
+        baseURL : "http://192.168.4.36:5011/api"
     });
 
     const status = ref<IStatus>();
