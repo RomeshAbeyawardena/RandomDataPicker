@@ -6,6 +6,7 @@ import AddEntry from "./components/AddEntry.vue";
 import Status from "./components/Status.vue";
 import { onMounted } from "vue";
 import { Entry, IEntry } from "./models/entry";
+import Button from "primevue/button";
 const store = createEntryStore();
 const { winningEntries, status } = storeToRefs(store);
 
@@ -29,5 +30,5 @@ function getEntry(entry: IEntry) : Entry {
   <div v-if="status?.isLoaded" v-for="entry in winningEntries">
     <EntryCard :entry-card="getEntry(entry)" />
   </div><br />
-  <button v-if="status?.isLoaded" @click="pickWinners">Pick winners</button>
+  <Button v-if="status?.isLoaded" @click="pickWinners" label="Pick winners" />
 </template>
