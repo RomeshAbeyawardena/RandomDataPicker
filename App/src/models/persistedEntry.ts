@@ -22,7 +22,7 @@ export class PersistedEntry implements IPersistedEntry {
         this.isFlagged = false;
     }
 
-    convert(entry: IPersistedEntry): PersistedEntry {
+    static convert(entry: IPersistedEntry): PersistedEntry {
         const newEntry = new PersistedEntry();
         newEntry.id = entry.id;
         newEntry.cId = entry.cId;

@@ -2,15 +2,15 @@
 import { createEntryStore } from "./stores/entry";
 import { storeToRefs } from "pinia";
 import EntryList from "./components/EntryList.vue";
-import EntryCard from "./components/EntryCard.vue";
 import AddEntry from "./components/AddEntry.vue";
 import Status from "./components/Status.vue";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { Entry, IEntry } from "./models/entry";
+import { IPersistedEntry, PersistedEntry } from "./models/persistedEntry";
 import Button from "primevue/button";
 const store = createEntryStore();
 const { winningEntries, status } = storeToRefs(store);
-
+const historicWinningEntries = ref(new Array<IPersistedEntry>());
 onMounted(async() => {
   await store.initialise();
 })
@@ -19,8 +19,16 @@ async function pickWinners() :Promise<void>{
   await store.getWinners(5);
 }
 
+async function getHistoricWinners() {
+  historicWinningEntries.value = await store.getWinnerHistory(25);
+}
+
 function getEntry(entry: IEntry) : Entry {
     return Entry.convert(entry);
+}
+
+function getPersistedEntry(entry: IPersistedEntry): PersistedEntry {
+  return PersistedEntry.convert(entry);
 }
 
 </script>
@@ -30,5 +38,7 @@ function getEntry(entry: IEntry) : Entry {
   <AddEntry v-if="status?.isPopulated" />
   <EntryList :entries="winningEntries.map(getEntry)" />
   <br />
+  <EntryList :persisted-entries="historicWinningEntries.map(getPersistedEntry)" />
   <Button v-if="status?.isLoaded" @click="pickWinners" label="Pick winners" />
+  <Button @click="getHistoricWinners" label="View historic entries" />
 </template>
