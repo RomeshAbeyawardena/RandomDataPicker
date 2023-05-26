@@ -107,7 +107,7 @@ export const createEntryStore = defineStore("entry-store", () : IEntryStore => {
         var response = await axios.get("winners", {
             params: {
                 totalItems: numberOfEntries,
-                q: ""
+                q: searchText.value
             }
         });
         return JSON.parse(response.data);

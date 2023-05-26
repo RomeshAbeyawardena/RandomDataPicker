@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { createEntryStore } from "./stores/entry";
 import { storeToRefs } from "pinia";
+import EntryList from "./components/EntryList.vue";
 import EntryCard from "./components/EntryCard.vue";
 import AddEntry from "./components/AddEntry.vue";
 import Status from "./components/Status.vue";
@@ -27,8 +28,7 @@ function getEntry(entry: IEntry) : Entry {
 <template>
   <Status />
   <AddEntry v-if="status?.isPopulated" />
-  <div v-if="status?.isLoaded" v-for="entry in winningEntries">
-    <EntryCard :entry-card="getEntry(entry)" />
-  </div><br />
+  <EntryList :entries="winningEntries.map(getEntry)" />
+  <br />
   <Button v-if="status?.isLoaded" @click="pickWinners" label="Pick winners" />
 </template>
