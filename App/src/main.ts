@@ -9,9 +9,11 @@ import './scss/index.scss';
 import BadgeDirective from 'primevue/badgedirective';
 import { AnimateCounterDirective } from './directives/animate-counter';
 
+const animateCounterDirective = AnimateCounterDirective.default();
+
 createApp(App)
     .use(createPinia())
     .use(PrimeVue)
     .directive('badge', BadgeDirective)
-    .directive(AnimateCounterDirective.name, AnimateCounterDirective.mounted)
+    .directive(animateCounterDirective.name, animateCounterDirective.mounted)
     .mount('#app');
