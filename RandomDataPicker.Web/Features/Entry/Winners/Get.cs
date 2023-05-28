@@ -24,7 +24,7 @@ public class Get : BaseHandler
            .GetRepository<Persistence.Models.Entry>();
 
         var expressionBuilder = PredicateBuilder.New<Persistence.Models.Entry>();
-
+        expressionBuilder.DefaultExpression = a => true;
         if (!string.IsNullOrWhiteSpace(searchFilter))
         {
             expressionBuilder.And(s => s.Name!.Contains(searchFilter!));
@@ -34,8 +34,8 @@ public class Get : BaseHandler
 
         await s.Response.WriteAsJsonAsync(await entryRepository.FindAsync(expressionBuilder,
             s => { return s.Count() > totalItems 
-                    ? s.OrderBy(n => n.Name).Take(totalItems) 
-                    : s.OrderBy(n => n.Name); 
+                    ? s.OrderByDescending(a => a.Created).Take(totalItems) 
+                    : s.OrderByDescending(n => n.Created).ThenBy(a => a.Name); 
             }));
     }
 }

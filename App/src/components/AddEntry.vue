@@ -32,7 +32,7 @@ async function injectEntries() {
 
 </script>
 <template>
-    <div class="card flex flex-wrap justify-content-center gap-3">
+    <div class="card flex flex-wrap justify-content-center gap-3 mb-2">
         <div>
             <span class="p-input-icon-left">
                 <i class="pi pi-user" />
